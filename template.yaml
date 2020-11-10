@@ -21,7 +21,6 @@ Conditions:
 Globals:
   Function:
     Timeout: 60
-    MemorySize: 2048
 Resources:
   NOfOneFunction:
     Type: AWS::Serverless::Function
@@ -29,6 +28,7 @@ Resources:
       CodeUri: n_of_1/
       Handler: app.lambda_handler
       Runtime: python3.8
+      MemorySize: 2048
       Events:
         HelloWorld:
           Type: Api

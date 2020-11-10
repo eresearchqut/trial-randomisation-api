@@ -6,6 +6,16 @@ import string
 
 rng = np.random.default_rng()
 
+class HttpVerb:
+    GET = 'GET'
+    POST = 'POST'
+    PUT = 'PUT'
+    PATCH = 'PATCH'
+    HEAD = 'HEAD'
+    DELETE = 'DELETE'
+    OPTIONS = 'OPTIONS'
+    ALL = '*'
+
 
 def lambda_handler(event, context):
     """n_of_1 api request handler
@@ -28,6 +38,8 @@ def lambda_handler(event, context):
 
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
+
+    print("Received event: " + json.dumps(event, indent=2))
 
     try:
         ip = requests.get("http://checkip.amazonaws.com/")
