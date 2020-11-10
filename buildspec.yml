@@ -5,7 +5,7 @@ phases:
         python: 3.8
   build:
     commands:
-      - sam package --template-file template.yaml --s3-bucket $BUCKET_NAME --output-template-file deployment.yml
+      - sam package --template-file template.yaml --s3-bucket $LAMBDA_BUCKET_NAME --output-template-file deployment.yml
 artifacts:
   files:
     - deployment.yml
