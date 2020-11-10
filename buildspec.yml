@@ -5,7 +5,7 @@ phases:
         python: 3.8
   build:
     commands:
-      - sam build --use-container
+      - sam build
       - sam package --template-file template.yaml --s3-bucket $LAMBDA_BUCKET_NAME --s3-prefix trial-randomisation-api --output-template-file packaged.yml
 artifacts:
   files:
