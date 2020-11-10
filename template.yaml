@@ -2,38 +2,79 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   trial-randomisation-api
-
   Endpoints for /n_of_1
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Parameters:
+  CertificateArn:
+    Type: String
+    Default: ''
+  DomainName:
+    Type: String
+    Default: ''
+  HostedZoneName:
+    Type: String
+    Default: ''
+Conditions:
+  CreateDomain: !And
+    - !Not [!Equals [!Ref CertificateArn, '']]
+    - !Not [!Equals [!Ref DomainName, '']]
+    - !Not [!Equals [!Ref HostedZoneName, '']]
 Globals:
   Function:
     Timeout: 60
-
+    MemorySize: 2048
 Resources:
   NOfOneFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: n_of_1/
       Handler: app.lambda_handler
       Runtime: python3.8
       Events:
         HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
-            Path: /n_of_1
-            Method: get
-
+            Path: /n_of_1/v1
+            Method: post
+  ApiDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Condition: CreateDomain
+    Properties:
+      RegionalCertificateArn: !Ref CertificateArn
+      DomainName: !Ref DomainName
+      EndpointConfiguration:
+        Types:
+        - REGIONAL
+  ApiBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Condition: CreateDomain
+    Properties:
+      DomainName: !Ref ApiDomainName
+      RestApiId: !Ref ServerlessRestApi
+      Stage: !Ref ServerlessRestApiProdStage
+    DependsOn: NOfOneFunction
+  ApiDomain:
+    Type: AWS::Route53::RecordSetGroup
+    Condition: CreateDomain
+    Properties:
+      HostedZoneName: !Ref HostedZoneName
+      RecordSets:
+      - Name: !Ref DomainName
+        Type: A
+        AliasTarget:
+          DNSName: !GetAtt ApiDomainName.RegionalDomainName
+          HostedZoneId: !GetAtt ApiDomainName.RegionalHostedZoneId
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   NOfOneApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/n_of_1/"
+    Description: "API Gateway endpoint URL for Prod stage for NOfOne function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/n_of_1/v1/"
+  NOfOneEndpoint:
+    Condition: CreateDomain
+    Description: "n-of-1 endpoint"
+    Value: !Sub "https://${DomainName}/n_of_1/v1/"
   NOfOneFunction:
-    Description: "Hello World Lambda Function ARN"
+    Description: "NOfOne Function ARN"
     Value: !GetAtt NOfOneFunction.Arn
   NOfOneFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
+    Description: "NOfOne Function IAM Role"
     Value: !GetAtt NOfOneFunctionRole.Arn
+

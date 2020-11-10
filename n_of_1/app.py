@@ -34,11 +34,9 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "body": json.dumps({
-                "event": event,
-                "api": "n_of_1",
+                "type": "n_of_1",
                 "ip": ip.text.rstrip(),
                 "schedule": randomise_schedule(5, 3, 4)
-                # "location": ip.text.replace("\n", "")
             }, cls=NumpyEncoder),
         }
     except requests.RequestException as e:
