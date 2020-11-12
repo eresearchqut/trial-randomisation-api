@@ -247,3 +247,4 @@ $RECYCLE.BIN/
 .pytest_cache
 .idea
 deployment.yaml
+*.egg-info

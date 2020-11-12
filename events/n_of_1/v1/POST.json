@@ -1,14 +1,14 @@
 {
-  "body": "{\"message\": \"hello world\"}",
+  "body": "{\"patients\": 6, \"treatments\": 4, \"cycles\": 3 }",
   "resource": "/{proxy+}",
-  "path": "/path/to/resource",
+  "path": "/n_of_1/v1",
   "httpMethod": "POST",
   "isBase64Encoded": false,
   "queryStringParameters": {
     "foo": "bar"
   },
   "pathParameters": {
-    "proxy": "/path/to/resource"
+    "proxy": "/n_of_1/v1"
   },
   "stageVariables": {
     "baz": "qux"
@@ -53,7 +53,7 @@
       "userAgent": "Custom User Agent String",
       "user": null
     },
-    "path": "/prod/path/to/resource",
+    "path": "/prod/n_of_1/v1",
     "resourcePath": "/{proxy+}",
     "httpMethod": "POST",
     "apiId": "1234567890",

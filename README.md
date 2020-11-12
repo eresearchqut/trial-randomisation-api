@@ -54,14 +54,15 @@ Build your application with the `sam build --use-container` command.
 $ sam build --use-container
 ```
 
-The SAM CLI installs dependencies defined in `n_of_1/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
+The SAM CLI installs dependencies defined in `src/app/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
 
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-$ sam local invoke NOfOneFunction --event events/event.json
+$ sam local invoke ApiFunction --event events/health/GET.json
+$ sam local invoke ApiFunction --event events/n_of_1/v1/POST.json
 ```
 
 The SAM CLI can also emulate your application's API. Use the `sam local start-api` to run the API locally on port 3000.
@@ -73,15 +74,6 @@ $ curl http://localhost:3000/
 
 The SAM CLI reads the application template to determine the API's routes and the functions that they invoke. The `Events` property on each function's definition includes the route and method for each path.
 
-```yaml
-      Events:
-        NOfOne:
-          Type: Api
-          Properties:
-            Path: /n_of_1
-            Method: get
-```
-
 ## Add a resource to your application
 The application template uses AWS Serverless Application Model (AWS SAM) to define application resources. AWS SAM is an extension of AWS CloudFormation with a simpler syntax for configuring common serverless application resources such as functions, triggers, and APIs. For resources not included in [the SAM specification](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md), you can use standard [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html) resource types.
 
@@ -92,7 +84,7 @@ To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs`
 `NOTE`: This command works for all AWS Lambda functions; not just the ones you deploy using SAM.
 
 ```bash
-$ sam logs -n NOfOneFunction --stack-name trial-randomisation-api --tail
+$ sam logs -n ApiFunction --stack-name trial-randomisation-api --tail
 ```
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
@@ -130,8 +122,8 @@ pyenv install 3.8.6
 pyenv virtualenv 3.8.6 trial-randomisation-api
 pyenv shell trial-randomisation-api
 pip install --upgrade pip
-pip install -r n_of_1/requirements.txt
-pip install -r tests/unit/requirements.txt
+pip install -r src/app/requirements.txt
+pip install -r tests/requirements.txt
 ```
 
 ## Building and running your tests

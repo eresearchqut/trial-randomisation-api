@@ -2,7 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   trial-randomisation-api
-  Endpoints for /n_of_1
 Parameters:
   CertificateArn:
     Type: String
@@ -21,20 +20,22 @@ Conditions:
 Globals:
   Function:
     Timeout: 60
+    Tracing: Active
+    MemorySize: 128
 Resources:
-  NOfOneFunction:
+  ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: n_of_1/
-      Handler: app.lambda_handler
+      CodeUri: src
+      Handler: function.handler
       Runtime: python3.8
-      MemorySize: 2048
+      Tracing: Active
       Events:
         HelloWorld:
           Type: Api
           Properties:
-            Path: /n_of_1/v1
-            Method: post
+            Path: '{proxy+}'
+            Method: ANY
   ApiDomainName:
     Type: AWS::ApiGateway::DomainName
     Condition: CreateDomain
@@ -51,7 +52,7 @@ Resources:
       DomainName: !Ref ApiDomainName
       RestApiId: !Ref ServerlessRestApi
       Stage: !Ref ServerlessRestApiProdStage
-    DependsOn: NOfOneFunction
+    DependsOn: ApiFunction
   ApiDomain:
     Type: AWS::Route53::RecordSetGroup
     Condition: CreateDomain
@@ -64,17 +65,17 @@ Resources:
           DNSName: !GetAtt ApiDomainName.RegionalDomainName
           HostedZoneId: !GetAtt ApiDomainName.RegionalHostedZoneId
 Outputs:
-  NOfOneApi:
+  ApiGatewayEndpoint:
     Description: "API Gateway endpoint URL for Prod stage for NOfOne function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/n_of_1/v1/"
-  NOfOneEndpoint:
+    Value: !Sub "https://${ServerlessRestApi}.execute-src.${AWS::Region}.amazonaws.com/Prod/"
+  ApiEndpoint:
     Condition: CreateDomain
-    Description: "n-of-1 endpoint"
-    Value: !Sub "https://${DomainName}/n_of_1/v1/"
-  NOfOneFunction:
-    Description: "NOfOne Function ARN"
-    Value: !GetAtt NOfOneFunction.Arn
-  NOfOneFunctionIamRole:
-    Description: "NOfOne Function IAM Role"
-    Value: !GetAtt NOfOneFunctionRole.Arn
+    Description: "API Endpoint"
+    Value: !Sub "https://${DomainName}/"
+  ApiFunction:
+    Description: "API Function ARN"
+    Value: !GetAtt ApiFunction.Arn
+  ApiFunctionIamRole:
+    Description: "API Function IAM Role"
+    Value: !GetAtt ApiFunctionRole.Arn
 
