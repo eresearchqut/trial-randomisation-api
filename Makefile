@@ -40,6 +40,9 @@ lint: pylint flake8
 
 clean:
 	$(info cleaning project)
-	# remove sam cache
+	# remove output from other stages
 	rm -rf .aws-sam
-
+	rm -rf .eggs
+	rm -rf .pytest_cache
+	rm -rf .coverage
+	rm -rf .tox
