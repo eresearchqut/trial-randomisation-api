@@ -23,6 +23,20 @@ Globals:
     Tracing: Active
     MemorySize: 128
 Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "pk"
+          AttributeType: "S"
+        - AttributeName: "sk"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "pk"
+          KeyType: "HASH"
+        - AttributeName: "sk"
+          KeyType: "RANGE"
+      BillingMode: "PAY_PER_REQUEST"
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -30,11 +44,14 @@ Resources:
       Handler: function.handler
       Runtime: python3.8
       Tracing: Active
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
       Events:
-        HelloWorld:
+        ProxyApiGateway:
           Type: Api
           Properties:
-            Path: '{proxy+}'
+            Path: '/{proxy+}'
             Method: ANY
   ApiDomainName:
     Type: AWS::ApiGateway::DomainName

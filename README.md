@@ -56,20 +56,33 @@ $ sam build --use-container
 
 The SAM CLI installs dependencies defined in `src/app/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
 
+Spin up an instance of dynamodb local and create your local table
+
+```bash
+docker-compose up
+aws dynamodb create-table --cli-input-json file://tests/integration/create-table.json --endpoint-url http://localhost:8000
+```
+
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-$ sam local invoke ApiFunction --event events/health/GET.json
-$ sam local invoke ApiFunction --event events/n_of_1/v1/POST.json
+sam local invoke ApiFunction --event tests/integration/health/GET.json --env-vars tests/integration/env.json --docker-network trial-randomisation-api_default
+sam local invoke ApiFunction --event tests/integration/n_of_1/v1/POST.json --env-vars tests/integration/env.json --docker-network trial-randomisation-api_default
 ```
 
 The SAM CLI can also emulate your application's API. Use the `sam local start-api` to run the API locally on port 3000.
 
 ```bash
-$ sam local start-api
-$ curl http://localhost:3000/
+sam build --use-container &&sam local start-api --docker-network trial-randomisation-api_default --env-vars tests/integration/env.json
+curl --location --request POST 'http://localhost:3000/n_of_1/v1' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "cycles": 3,
+    "patients": 1000,
+    "treatments": 4
+}'
 ```
 
 The SAM CLI reads the application template to determine the API's routes and the functions that they invoke. The `Events` property on each function's definition includes the route and method for each path.
