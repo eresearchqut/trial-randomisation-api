@@ -1,5 +1,3 @@
-import pytest
-
 from moto import mock_dynamodb2
 from fixtures.dynamodb_client import mock_client
 from uuid import UUID
