@@ -1,63 +1,40 @@
 '''Message related operations'''
 import os
 
-# from datetime import datetime
-# from uuid import uuid4
+from datetime import datetime
+from uuid import uuid4, UUID
 import boto3
 
-DDB_TABLE_NAME = os.environ.get('DDB_TABLE_NAME')
-ddb_res = boto3.resource('dynamodb')
-ddb_table = ddb_res.Table(DDB_TABLE_NAME)
+TABLE_NAME = os.environ.get('TABLE_NAME', 'trial-randomisation-schedules')
+AWS_REGION = os.environ.get('AWS_REGION', 'ap-southeast-2')
+VERSION_ZERO = 'v0'
 
 
-# def create_message(item: dict) -> dict:
-#     '''Transform item to put into DDB'''
-#     dt = datetime.utcnow()
-#     item['pk'] = str(uuid4())
-#     item['sk'] = 'v0'
-#     item['timestamp'] = int(dt.timestamp())
-#
-#     r = ddb_table.put_item(
-#         Item=item
-#     )
-#     return {'message_id': item['pk']}
-#
-#
-# def retrieve_message(message_id: str) -> dict:
-#     '''Get item in DDB'''
-#     r = ddb_table.get_item(
-#         Key={
-#             'pk': message_id,
-#             'sk': 'v0'
-#         }
-#     )
-#     item = r.get('Item', {})
-#
-#     return item
-#
-#
-# def update_message(message_id: str, item: dict) -> dict:
-#     '''Update item in DDB'''
-#     attribute_updates = {}
-#     for key in item.keys():
-#         attribute_updates[key] = {'Action': 'PUT', 'Value': item.get(key)}
-#
-#     r = ddb_table.update_item(
-#         Key={
-#             'pk': message_id,
-#             'sk': 'v0'
-#         },
-#         AttributeUpdates=attribute_updates
-#     )
-#     return r
-#
-#
-# def delete_message(message_id: str) -> dict:
-#     '''Delete item in DDB'''
-#     r = ddb_table.delete_item(
-#         Key={
-#             'pk': message_id,
-#             'sk': 'v0'
-#         },
-#     )
-#     return r
+def __get_table():
+    return boto3.resource('dynamodb', AWS_REGION).Table(TABLE_NAME)
+
+
+def save_schedule(schedule: dict) -> UUID:
+    '''Save the schedule into dynamodb'''
+    item = dict()
+    id = uuid4()
+    item['pk'] = str(id)
+    item['sk'] = VERSION_ZERO
+    item['schedule'] = schedule
+    item['timestamp'] = datetime.utcnow().isoformat()
+    __get_table().put_item(
+        Item=item
+    )
+    return id
+
+
+def load_schedule(id: UUID) -> dict:
+    '''Retrieve a schedule from dynamodb'''
+    record = __get_table().get_item(
+        Key={
+            'pk': str(id),
+            'sk': VERSION_ZERO
+        }
+    )
+    item = record.get('Item', {})
+    return item['schedule']
