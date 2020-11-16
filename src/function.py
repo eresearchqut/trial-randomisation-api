@@ -2,6 +2,10 @@
 '''Handler entry'''
 import app
 
+from aws_xray_sdk.core import patch_all
+
+patch_all()
+
 handler = app.create_app()
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 '''common routes'''
 from flask import Blueprint, jsonify, request
-from app.n_of_1 import randomise_schedule
+from app.n_of_1 import randomise_n_of_1_schedule
 from app.repository import save_schedule, load_schedule
 from uuid import UUID
 
@@ -19,7 +19,7 @@ def health():
 def n_of_1_v1():
     '''n-of-1 endpoint'''
     req_data = request.get_json(force=True)
-    schedule = randomise_schedule(req_data['patients'], req_data['cycles'], req_data['treatments'])
+    schedule = randomise_n_of_1_schedule(req_data['patients'], req_data['cycles'], req_data['treatments'])
     id = save_schedule(schedule)
     # message_id = repository.message.create_message(item)
     response = {
