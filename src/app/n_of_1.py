@@ -1,7 +1,7 @@
 """n-of-1 functions"""
 import string
-import numpy as np
 
+import numpy as np
 from aws_xray_sdk.core import xray_recorder
 
 

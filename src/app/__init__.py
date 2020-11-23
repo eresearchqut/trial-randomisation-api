@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Application entry point"""
 from flask_lambda import FlaskLambda
+
 from app.routes import routes
 
 
