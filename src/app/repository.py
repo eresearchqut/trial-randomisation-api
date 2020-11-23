@@ -14,7 +14,6 @@ LOCAL_ENDPOINT = os.environ.get('ENDPOINT_URL', 'http://dynamodb:8000')
 
 VERSION_ZERO = 'v0'
 
-print(TABLE_NAME)
 
 def __get_table():
     return boto3.resource('dynamodb', endpoint_url=LOCAL_ENDPOINT).Table(TABLE_NAME) \
