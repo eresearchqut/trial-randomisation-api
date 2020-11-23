@@ -7,15 +7,15 @@ from app import repository
 @mock_dynamodb2
 def test_save_schedule(mock_client):
     mock_client()
-    id = repository.save_schedule([[['A']]])
-    assert isinstance(id, UUID)
+    schedule_id = repository.save_schedule([[['A']]])
+    assert isinstance(schedule_id, UUID)
 
 
 @mock_dynamodb2
 def test_load_schedule(mock_client):
     mock_client()
-    id = repository.save_schedule([[['B']]])
-    schedule = repository.load_schedule(id)
+    schedule_id = repository.save_schedule([[['B']]])
+    schedule = repository.load_schedule(schedule_id)
     assert schedule == [[['B']]]
 
 

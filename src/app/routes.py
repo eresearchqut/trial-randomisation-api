@@ -20,19 +20,19 @@ def n_of_1_v1():
     """n-of-1 endpoint"""
     req_data = request.get_json(force=True)
     schedule = randomise_n_of_1_schedule(req_data['patients'], req_data['cycles'], req_data['treatments'])
-    id = save_schedule(schedule)
+    schedule_id = save_schedule(schedule)
     # message_id = repository.message.create_message(item)
     response = {
-        'id': id,
+        'id': schedule_id,
         'schedule': schedule
     }
     status_code = 200
     return jsonify(response), status_code
 
 
-@routes.route('/n_of_1/v1/<id>', methods=['GET'])
-def n_of_1_v1_load(id: UUID):
+@routes.route('/n_of_1/v1/<schedule_id>', methods=['GET'])
+def n_of_1_v1_load(schedule_id: UUID):
     """n-of-1 endpoint"""
-    schedule = load_schedule(id)
+    schedule = load_schedule(schedule_id)
     status_code = 200
     return jsonify(schedule), status_code

@@ -23,22 +23,22 @@ def __get_table():
 def save_schedule(schedule: dict) -> UUID:
     """Save the schedule into dynamodb"""
     item = dict()
-    id = uuid4()
-    item['pk'] = str(id)
+    schedule_id = uuid4()
+    item['pk'] = str(schedule_id)
     item['sk'] = VERSION_ZERO
     item['schedule'] = schedule
     item['timestamp'] = datetime.utcnow().isoformat()
     __get_table().put_item(
         Item=item
     )
-    return id
+    return schedule_id
 
 
-def load_schedule(id: UUID) -> dict:
+def load_schedule(schedule_id: UUID) -> dict:
     """Retrieve a schedule from dynamodb"""
     record = __get_table().get_item(
         Key={
-            'pk': str(id),
+            'pk': str(schedule_id),
             'sk': VERSION_ZERO
         }
     )
