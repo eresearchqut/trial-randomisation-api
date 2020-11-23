@@ -22,12 +22,13 @@ def __get_table():
 
 def save_schedule(schedule: dict) -> UUID:
     """Save the schedule into dynamodb"""
-    item = dict()
     schedule_id = uuid4()
-    item['pk'] = str(schedule_id)
-    item['sk'] = VERSION_ZERO
-    item['schedule'] = schedule
-    item['timestamp'] = datetime.utcnow().isoformat()
+    item = {
+        'pk': str(schedule_id),
+        'sk': VERSION_ZERO,
+        'schedule': schedule,
+        'timestamp': datetime.utcnow().isoformat(),
+    }
     __get_table().put_item(
         Item=item
     )
