@@ -1,6 +1,5 @@
 import pytest
 
-
 from app.n_of_1 import randomise_n_of_1_schedule
 
 
@@ -13,5 +12,3 @@ def test_randomise_schedule(patients, cycles, treatments):
     assert len(schedule[0]) == cycles
     assert len(schedule[0][0]) == treatments
     assert schedule[0][0][0].isalpha()
-
-

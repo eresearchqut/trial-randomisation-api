@@ -1,13 +1,5 @@
-init:
-	pipenv --python 3.8
-	pipenv install --dev
-
 # Command to run everytime you make changes to verify everything works
-dev: flake lint test
-
-# Verifications to run before sending a pull request
-pr: init dev
-
+dev: lint validate build
 
 build:
 	$(info Building application)
@@ -20,23 +12,26 @@ validate:
 	$(info validating SAM template)
 	@sam validate
 
+lint: flake8 isort black
+
+flake8:
+	$(info running flake8)
+	flake8 src
+	flake8 tests
+
+isort:
+	$(info sorting imports with isort)
+	isort src
+	isort tests
+
+black:
+	$(info formatting with black)
+	black -l 120 src
+	black -l 120 tests
+
 test:
 	$(info running unit tests)
 	tox
-
-flake8:
-	$(info running flake8 on code)
-	pip install flake8
-	flake8 src
-	flake8 tests/unit
-
-pylint:
-	$(info running pylint on code)
-	# Linter performs static analysis to catch latent bugs
-	pip install pylint
-	pylint src
-
-lint: pylint flake8
 
 clean:
 	$(info cleaning project)
