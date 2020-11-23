@@ -2,6 +2,7 @@
 import json
 import os
 from datetime import datetime
+from typing import List
 from uuid import UUID, uuid4
 
 import boto3
@@ -22,7 +23,7 @@ def __get_table():
     )
 
 
-def save_schedule(schedule: dict) -> UUID:
+def save_schedule(schedule: List[List[List[str]]]) -> UUID:
     """Save the schedule into dynamodb"""
     schedule_id = uuid4()
     item = {
