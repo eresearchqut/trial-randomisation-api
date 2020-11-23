@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''Handler entry'''
+"""Handler entry"""
 import app
 
 from aws_xray_sdk.core import patch_all

@@ -1,4 +1,4 @@
-'''Message related operations'''
+"""Message related operations"""
 import os
 import boto3
 import json
@@ -22,7 +22,7 @@ def __get_table():
 
 
 def save_schedule(schedule: dict) -> UUID:
-    '''Save the schedule into dynamodb'''
+    """Save the schedule into dynamodb"""
     item = dict()
     id = uuid4()
     item['pk'] = str(id)
@@ -36,7 +36,7 @@ def save_schedule(schedule: dict) -> UUID:
 
 
 def load_schedule(id: UUID) -> dict:
-    '''Retrieve a schedule from dynamodb'''
+    """Retrieve a schedule from dynamodb"""
     record = __get_table().get_item(
         Key={
             'pk': str(id),
