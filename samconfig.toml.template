@@ -8,7 +8,7 @@ stack_name = "${STACK_NAME}"
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 fail_on_empty_changeset = false
-parameter_overrides = "CertificateArn=\"${CERTIFICATE_ARN}\" DomainName=\"${DOMAIN_NAME}\" HostedZoneName=\"${HOSTED_ZONE}\""
+parameter_overrides = "CertificateArn=\"${CERTIFICATE_ARN}\" DomainName=\"${DOMAIN_NAME}\" HostedZoneId=\"${HOSTED_ZONE_ID}\""
 region = "${AWS_DEFAULT_REGION}"
 s3_bucket = "${LAMBDA_BUCKET_NAME}"
 stack_name = "${STACK_NAME}"

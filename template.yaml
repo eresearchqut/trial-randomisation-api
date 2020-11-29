@@ -9,14 +9,14 @@ Parameters:
   DomainName:
     Type: String
     Default: ''
-  HostedZoneName:
+  HostedZoneId:
     Type: String
     Default: ''
 Conditions:
   CreateDomain: !And
     - !Not [!Equals [!Ref CertificateArn, '']]
     - !Not [!Equals [!Ref DomainName, '']]
-    - !Not [!Equals [!Ref HostedZoneName, '']]
+    - !Not [!Equals [!Ref HostedZoneId, '']]
 Globals:
   Function:
     Timeout: 60
@@ -77,7 +77,7 @@ Resources:
     Type: AWS::Route53::RecordSetGroup
     Condition: CreateDomain
     Properties:
-      HostedZoneName: !Ref HostedZoneName
+      HostedZoneId: !Ref HostedZoneId
       RecordSets:
       - Name: !Ref DomainName
         Type: A
@@ -98,4 +98,3 @@ Outputs:
   ApiFunctionIamRole:
     Description: "API Function IAM Role"
     Value: !GetAtt ApiFunctionRole.Arn
-
