@@ -10,5 +10,6 @@ phases:
   build:
     commands:
       - envsubst < samconfig.toml.template > samconfig.toml
+      - sam build
       - sam package
       - sam deploy --profile account-role
