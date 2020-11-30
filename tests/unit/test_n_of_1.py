@@ -1,7 +1,7 @@
 import pytest
 
 from math import factorial, pow
-from app.n_of_1 import randomise_n_of_1_schedule, permutate, block, shuffle
+from app.n_of_1 import randomise_n_of_1_schedule, permutate, block
 
 
 @pytest.mark.parametrize("treatments,expected", [(2, [['A', 'B'], ['B', 'A']]),
@@ -25,9 +25,6 @@ def test_block_and_shuffle(cycles, treatments, expected):
     blocks = block(cycles, treatments)
     assert len(blocks) == pow(factorial(treatments), cycles)
     assert blocks == expected
-    shuffled = shuffle(cycles, treatments)
-    assert len(shuffled) == pow(factorial(treatments), cycles)
-    assert shuffled != blocks
 
 
 @pytest.mark.parametrize("patients,cycles,treatments", [(4, 2, 2), (40, 3, 2)])
