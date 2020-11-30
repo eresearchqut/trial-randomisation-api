@@ -27,7 +27,6 @@ def test_block_and_shuffle(cycles, treatments, expected):
     assert blocks == expected
     shuffled = shuffle(cycles, treatments)
     assert len(shuffled) == pow(factorial(treatments), cycles)
-    assert shuffled != blocks
 
 
 @pytest.mark.parametrize("patients,cycles,treatments", [(4, 2, 2), (40, 3, 2)])
