@@ -13,7 +13,7 @@ def randomise_n_of_1_schedule(number_of_patients: int, number_of_cycles: int, nu
 
 
 def shuffled_block(number_of_cycles: int, number_of_treatments: int):
-    b = block(number_of_cycles, number_of_treatments)
+    b = list(block(number_of_cycles, number_of_treatments))
 
     while True:
         np.random.default_rng().shuffle(b)
@@ -22,9 +22,9 @@ def shuffled_block(number_of_cycles: int, number_of_treatments: int):
 
 def block(number_of_cycles: int, number_of_treatments: int):
     permutations = permutate(number_of_treatments)
-    return [list(product) for product in itertools.product(permutations, repeat=number_of_cycles)]
+    return itertools.product(permutations, repeat=number_of_cycles)
 
 
 def permutate(number_of_treatments: int):
     treatments = string.ascii_uppercase[:number_of_treatments]
-    return [list(permutation) for permutation in itertools.permutations(treatments)]
+    return itertools.permutations(treatments)
