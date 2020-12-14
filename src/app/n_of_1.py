@@ -8,12 +8,16 @@ from aws_xray_sdk.core import xray_recorder
 @xray_recorder.capture()
 def randomise_n_of_1_schedule(number_of_patients: int, number_of_cycles: int, number_of_treatments: int):
     """Randomise a n-of-1 schedule based on the number of patients, cycles and treatments in the trial"""
-    block_cycle = itertools.cycle(block(number_of_cycles, number_of_treatments))
-    schedules = list(itertools.islice(block_cycle, number_of_patients))
+    schedules = itertools.chain.from_iterable(shuffled_block(number_of_cycles, number_of_treatments))
+    return list(itertools.islice(schedules, number_of_patients))
 
-    np.random.default_rng().shuffle(schedules)
 
-    return schedules
+def shuffled_block(number_of_cycles: int, number_of_treatments: int):
+    b = block(number_of_cycles, number_of_treatments)
+
+    while True:
+        np.random.default_rng().shuffle(b)
+        yield b
 
 
 def block(number_of_cycles: int, number_of_treatments: int):
