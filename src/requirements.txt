@@ -1,4 +1,4 @@
-boto3==1.16.18
+boto3==1.16.35
 numpy==1.19.4
 Flask==1.1.2
 flask-lambda==0.0.4
